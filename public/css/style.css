@@ -7,8 +7,15 @@
 nav {
   font-family: 'Audiowide', cursive;
 }
+
+.nav-link {
+  color: blue !important;
+  font-size: 18px;
+}
+
 .nav-link:hover {
-  color: white;
+  color: rgb(46, 41, 41) !important;
+  /* background-color: rgb(155, 143, 143); */
 }
 
 .register-form {
