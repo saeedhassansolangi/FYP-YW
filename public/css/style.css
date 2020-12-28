@@ -14,7 +14,8 @@ nav {
 }
 
 .nav-link:hover {
-  color: rgb(46, 41, 41) !important;
+  color: rgb(122, 121, 121) !important;
+  text-shadow: 0.5px 0.5px 0.5px rgb(211, 205, 205);
   /* background-color: rgb(155, 143, 143); */
 }
 
