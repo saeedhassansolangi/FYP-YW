@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+
+/* body {
+  background-color: #020c1b;
+} */
+
+nav {
+  font-family: 'Audiowide', cursive;
+}
+.nav-link:hover {
+  color: white;
+}
+
+.register-form {
+  width: 50%;
+  margin: 0 auto;
+  background-color: #fdfdfd;
+  height: 80%;
+  padding: 100px;
+}
+
+@media (max-width: 780px) {
+  .register {
+    width: 70% !important;
+  }
+}
+
+.btn-register:hover {
+  background-color: white !important;
+}
