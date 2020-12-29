@@ -13,7 +13,8 @@ const multer = require('multer');
 
 /* eslint-disable */
 dotEnv.config({ path: path.join(__dirname, 'config', 'config.env') });
-const dbURL = process.env.MONGO_UR || process.env.LOCAL_DB;
+
+const dbURL = process.env.MONGO_URL || process.env.LOCAL_DB;
 
 mongoose
   .connect(dbURL, {
