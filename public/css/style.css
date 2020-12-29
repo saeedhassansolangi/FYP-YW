@@ -28,8 +28,8 @@ nav {
 }
 
 @media (max-width: 780px) {
-  .register {
-    width: 70% !important;
+  .register-form {
+    width: 100% !important;
   }
 }
 
