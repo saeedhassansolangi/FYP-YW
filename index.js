@@ -117,17 +117,16 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: storage,
   limits: {
-    fieldSize: 1024 * 1024 * 5,
+    fieldSize: 1024 * 1024 * 5, // 5MB
   },
   fileFilter: fileFilter,
 });
-
-// var upload = multer({ dest: 'uploads/' });
 
 // MIDDLEWARES
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
 
 /* eslint-disable */
 app.use(express.static(path.join(__dirname, 'public')));
@@ -148,11 +147,6 @@ app.use(passport.session());
 if (process.env.NODE_ENV) {
   app.use(morgan('dev'));
 }
-
-// if (process.env.NODE_ENV === 'production') {
-//   app.set('trust proxy', 1); // trust first proxy
-//   session.cookie.secure = true; // serve secure cookies
-// }
 
 app.use((req, res, next) => {
   res.locals.user = req.user;
@@ -201,9 +195,13 @@ app.post(
   '/login',
   passport.authenticate('local', { failureRedirect: '/login' }),
   function (req, res) {
-    res.render('secret');
+    res.redirect('/');
   }
 );
+
+app.get('/secret', isAuthenticated, (req, res) => {
+  res.render('secret');
+});
 
 app.get('/logout', (req, res) => {
   req.logout();
@@ -218,6 +216,13 @@ app.post('/fileUploads', upload.single('file'), (req, res) => {
     res.send('Something went wrong');
   }
 });
+
+function isAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  else {
+    res.redirect('/');
+  }
+}
 
 app.listen(PORT, () =>
   console.log(

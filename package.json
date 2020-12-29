@@ -4,7 +4,7 @@
   "description": "Css form for Css Students",
   "main": "index.js",
   "scripts": {
-    "start-dev":"nodemon index.js",
+    "start-dev": "nodemon index.js",
     "start": "node index.js"
   },
   "keywords": [
@@ -20,6 +20,7 @@
     "bcryptjs": "^2.4.3",
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
+    "cloudinary": "^1.23.0",
     "connect-flash": "^0.1.1",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.5",
