@@ -14,7 +14,8 @@ const multer = require('multer');
 /* eslint-disable */
 dotEnv.config({ path: path.join(__dirname, 'config', 'config.env') });
 
-const dbURL = process.env.MONGO_URL || process.env.LOCAL_DB;
+// Place the "L" after the "UR"
+const dbURL = process.env.MONGO_UR || process.env.LOCAL_DB;
 const PORT = process.env.PORT || 3000;
 
 mongoose
@@ -137,7 +138,6 @@ app.use(
     secret: 'Younis & Waqas',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true },
   })
 );
 
@@ -185,9 +185,7 @@ app.post('/register', (req, res) => {
           if (err) {
             console.log(err);
           } else {
-            console.log(user);
-            console.log('User is inserted in the Database');
-            res.send(hash);
+            res.redirect('/login');
           }
         });
       }
