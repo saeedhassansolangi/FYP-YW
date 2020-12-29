@@ -15,6 +15,7 @@ const multer = require('multer');
 dotEnv.config({ path: path.join(__dirname, 'config', 'config.env') });
 
 const dbURL = process.env.MONGO_URL || process.env.LOCAL_DB;
+const PORT = process.env.PORT || 3000;
 
 mongoose
   .connect(dbURL, {
@@ -220,7 +221,7 @@ app.post('/fileUploads', upload.single('file'), (req, res) => {
   }
 });
 
-app.listen(3000, () =>
+app.listen(PORT, () =>
   console.log(
     chalk.white.bgMagenta.bold('server is running at http://localhost:3000')
   )
