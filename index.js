@@ -136,6 +136,7 @@ app.use(
     secret: 'Younis & Waqas',
     resave: false,
     saveUninitialized: true,
+    cookie: { secure: true },
   })
 );
 
@@ -147,10 +148,10 @@ if (process.env.NODE_ENV) {
   app.use(morgan('dev'));
 }
 
-if (process.env.NODE_ENV === 'production') {
-  app.set('trust proxy', 1); // trust first proxy
-  session.cookie.secure = true; // serve secure cookies
-}
+// if (process.env.NODE_ENV === 'production') {
+//   app.set('trust proxy', 1); // trust first proxy
+//   session.cookie.secure = true; // serve secure cookies
+// }
 
 app.use((req, res, next) => {
   res.locals.user = req.user;
