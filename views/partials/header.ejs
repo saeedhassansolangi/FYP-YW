@@ -3,8 +3,8 @@
 <%-include("./head")%>
 
 <body>
-  <!-- Naigation Bar  -->
-  <nav class="navbar navbar-expand-lg navbar-light">
+  <!-- Naigation Bar   -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">Css Form</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -45,6 +45,7 @@
           </li>
          <% if(user) {%>
           <li class="nav-item">
+            <%=user%>
             <a class="nav-link" href="#"><%=user.username%></a>
           </li>
           <li class="nav-item">

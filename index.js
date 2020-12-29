@@ -9,6 +9,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const User = require('./models/user');
+const multer = require('multer');
 
 /* eslint-disable */
 dotEnv.config({ path: path.join(__dirname, 'config', 'config.env') });
@@ -86,6 +87,39 @@ passport.deserializeUser(function (id, done) {
 });
 
 const app = express();
+
+// FILE UPLOADS
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/jpeg' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/svg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fieldSize: 1024 * 1024 * 5,
+  },
+  fileFilter: fileFilter,
+});
+
+// var upload = multer({ dest: 'uploads/' });
 
 // MIDDLEWARES
 app.set('view engine', 'ejs');
@@ -168,6 +202,15 @@ app.post(
 app.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
+});
+
+app.post('/fileUploads', upload.single('file'), (req, res) => {
+  if (req.file) {
+    console.log('File Submitted', req.file.path);
+    res.send('File Submitted');
+  } else {
+    res.send('Something went wrong');
+  }
 });
 
 app.listen(3000, () =>

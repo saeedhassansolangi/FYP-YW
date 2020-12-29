@@ -2,9 +2,12 @@
 
 
   <div class="jumbotron">
-    <p>
-      Here goes the Website Info
-    </p>
+      <form onsubmit="submitted(event)" action="/fileUploads" method="POST" enctype="multipart/form-data" > 
+        <div class="form-group" >
+          <input type="file"  name="file" id="file">
+          <button class="btn btn-success"  id="button">Uploads</button>
+        </div>
+      </form>
 </div>
 
 
