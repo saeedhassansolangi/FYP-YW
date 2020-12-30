@@ -4,90 +4,23 @@ const dotEnv = require('dotenv');
 const morgan = require('morgan');
 const chalk = require('chalk');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 const multer = require('multer');
+const connectDB = require('./config/db');
+// const cloudinary = require('cloudinary').v2;
 
 /* eslint-disable */
 dotEnv.config({ path: path.join(__dirname, 'config', 'config.env') });
-
-// Place the "L" after the "UR"
-const dbURL = process.env.MONGO_UR || process.env.LOCAL_DB;
 const PORT = process.env.PORT || 3000;
+// Database Config
+connectDB();
 
-mongoose
-  .connect(dbURL, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-  })
-  .then((db) => {
-    console.log(
-      chalk.bgCyan.white.bold(`
-      server is connected with database: ${db.connections[0].name} and 
-      host: ${db.connections[0].host} on
-      port:  ${db.connections[0].port} `)
-    );
-  })
-  .catch((err) => console.log(err.message));
-
-mongoose.connection.once('open', (err) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log(chalk.white.bgRed.bold('Mongoose is Successfully Connected'));
-  }
-});
-
-mongoose.connection.on('error', (err) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log('Mongoose is Successfully Connected');
-  }
-});
-
-passport.use(
-  new LocalStrategy(function (username, password, done) {
-    User.findOne({ username: username }, function (err, user) {
-      if (err) {
-        console.log('!done');
-        return done(err);
-      }
-
-      if (!user) {
-        console.log('!done');
-        return done(null, false, { message: 'Incorrect username.' });
-      }
-
-      if (!user.password === password) {
-        console.log('!done');
-        return done(null, false, { message: 'Incorrect password.' });
-      }
-
-      bcrypt
-        .compare(user.password, password)
-        .then((res) => {
-          // res === true
-          console.log('done');
-          return done(null, user);
-        })
-        .catch((err) => console.log(err));
-    });
-  })
-);
-
-passport.serializeUser(function (user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function (id, done) {
-  User.findById(id, function (err, user) {
-    done(err, user);
-  });
-});
+require('./services/LocalAuth')(passport);
+require('./services/GoogleAuth')(passport);
 
 const app = express();
 
@@ -136,7 +69,9 @@ app.use(
   session({
     secret: 'Younis & Waqas',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: { maxAge: 2 * 60 * 60 * 1000 },
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
   })
 );
 
@@ -153,18 +88,25 @@ app.use((req, res, next) => {
   next();
 });
 
-/* eslint-enable */
-app.get('/', (req, res) => {
-  res.render('home');
-});
+// ======================== Here goes "index.js" Route =============================
 
-app.get('/contact', (req, res) => {
-  res.send('Hello WOrld');
-});
+app.use('/', require('./routes/index'));
 
-app.get('/register', (req, res) => {
-  res.render('register');
-});
+app.get(
+  '/auth/google',
+  passport.authenticate('google', { scope: ['profile'] })
+);
+
+// @desc   google auth callback
+// @route  GET /auth/google/callback
+
+app.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+    res.redirect('/');
+  }
+);
 
 app.post('/register', (req, res) => {
   console.log(req.body);
@@ -179,6 +121,7 @@ app.post('/register', (req, res) => {
           if (err) {
             console.log(err);
           } else {
+            console.log(user);
             res.redirect('/login');
           }
         });

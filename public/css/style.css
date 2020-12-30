@@ -36,3 +36,7 @@ nav {
 .btn-register:hover {
   background-color: white !important;
 }
+
+#google {
+  background-color: #dd4b39 !important;
+}
